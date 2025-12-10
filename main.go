@@ -164,8 +164,8 @@ func handleReceivedMessage(client mqtt.Client, msg mqtt.Message) {
 	templateId := record[0]
 	switch templateId {
 
-	// sample message: 510,DeviceSerial
 	// link: https://cumulocity.com/docs/smartrest/mqtt-static-templates/#510
+	// sample message: 510,DeviceSerial
 	case "510":
 		slog.Info("A User scheduled a RESTART operation", "templateId", templateId, "serialNo", record[1])
 		publishSmartRestMessage(client, "501,c8y_Restart") // set Operation to executing (shows platform Users the restart has been picked up and is done right now)
@@ -174,16 +174,16 @@ func handleReceivedMessage(client mqtt.Client, msg mqtt.Message) {
 		// if the operation had failed, you would send this message to platform
 		// publishSmartRestMessage(client, "502,c8y_Restart,\"Restart failed because of XYZ\"")
 
-	// sample message: 511,DeviceSerial,execute this
 	// link: https://cumulocity.com/docs/smartrest/mqtt-static-templates/#511
+	// sample message: 511,DeviceSerial,execute this
 	case "511":
 		slog.Info("A User scheduled a SHELL operation", "templateId", templateId, "serialNo", record[1], "command", record[2])
 		publishSmartRestMessage(client, "501,c8y_Command")
 		time.Sleep(3 * time.Second) // simulating shell execution
 		publishSmartRestMessage(client, "503,c8y_Command")
 
-	// sample message: 515,DeviceSerial,myFirmware,1.0,http://www.my.url
 	// link: https://cumulocity.com/docs/smartrest/mqtt-static-templates/#515
+	// sample message: 515,DeviceSerial,myFirmware,1.0,http://www.my.url
 	case "515":
 		fwName := record[2]
 		fwVersion := record[3]
@@ -197,8 +197,8 @@ func handleReceivedMessage(client mqtt.Client, msg mqtt.Message) {
 		// succeed Operation
 		publishSmartRestMessage(client, "503,c8y_Firmware")
 
-	// sample message: 522,DeviceSerial,logfileA,2013-06-22T17:03:14.000+02:00,2013-06-22T18:03:14.000+02:00,ERROR,1000
 	// link: https://cumulocity.com/docs/smartrest/mqtt-static-templates/#522
+	// sample message: 522,DeviceSerial,logfileA,2013-06-22T17:03:14.000+02:00,2013-06-22T18:03:14.000+02:00,ERROR,1000
 	case "522":
 		slog.Info("A User scheduled a LOG FILE RETRIEVAL operation", "templateId", templateId, "serialNo", record[1],
 			"logfileName", record[2], "startDate", record[3], "endDate", record[4], "searchText", record[5], "maxLines", record[5])
@@ -206,8 +206,8 @@ func handleReceivedMessage(client mqtt.Client, msg mqtt.Message) {
 		time.Sleep(3 * time.Second) // extract local log file and upload to platform via HTTP
 		publishSmartRestMessage(client, "503,c8y_LogfileRequest")
 
-	// sample message: 528,DeviceSerial,softwareA,1.0,url1,install,softwareB,2.0,url2,install
 	// link: https://cumulocity.com/docs/smartrest/mqtt-static-templates/#528
+	// sample message: 528,DeviceSerial,softwareA,1.0,url1,install,softwareB,2.0,url2,install
 	case "528":
 		countSoftwarePackages := (len(record) - 2) / 4
 		receivedSoftwarePackages := []map[string]string{}
@@ -228,8 +228,8 @@ func handleReceivedMessage(client mqtt.Client, msg mqtt.Message) {
 		publishSmartRestMessage(client, "116,software1,version1,url1,software2,,url2,software3,version3")
 		publishSmartRestMessage(client, "503,c8y_SoftwareUpdate") // set Operation to successful
 
-	// sample message: 530,DeviceSerial,10.0.0.67,22,eb5e9d13-1caa-486b-bdda-130ca0d87df8
 	// link: https://cumulocity.com/docs/smartrest/mqtt-static-templates/#530
+	// sample message: 530,DeviceSerial,10.0.0.67,22,eb5e9d13-1caa-486b-bdda-130ca0d87df8
 	case "530":
 		slog.Info("A User requested REMOTE SSH ACCESS to a Device", "templateId", templateId, "serialNo", record[1],
 			"ip", record[2], "port", record[3], "connectionKey", record[4])
